@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3336559348956854361}
   - component: {fileID: 6183275933463759574}
   m_Layer: 0
-  m_Name: Sphere
+  m_Name: GunProjectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -93,6 +93,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7961268485394527758}
   - component: {fileID: 6285834398249991670}
+  - component: {fileID: 7748571791811838258}
   m_Layer: 0
   m_Name: GunProjectile
   m_TagString: Untagged
@@ -143,3 +144,21 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &7748571791811838258
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8717250017252518735}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2da96deb92df34d489f58cfd62078ede, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_rb: {fileID: 6285834398249991670}
+  m_baseSpeed: 60
+  m_speedMultiplier: {x: 1, y: 10}
+  m_sizeMultiplier: {x: 1, y: 2}
+  m_chargeDuration: 1
+  m_lifetime: 5

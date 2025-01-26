@@ -6,13 +6,23 @@ public class GunProjectile : MonoBehaviour
     [SerializeField] private Rigidbody m_rb;
 
     [Header("Values")]
+    [SerializeField] private float m_baseSpeed = 5.0f; // Vitesse de base de la balle
     [SerializeField] private Vector2 m_speedMultiplier = new Vector2(1, 10); // Ajustez les valeurs min/max
     [SerializeField] private Vector2 m_sizeMultiplier = new Vector2(1, 2); // Ajustez les valeurs min/max
     [SerializeField] private float m_chargeDuration = 1.0f;
 
+    [Header("Lifetime")]
+    [SerializeField] private float m_lifetime = 5.0f; // Temps avant destruction automatique de la balle
+
     private float m_currentChargeTime = 0.0f;
 
     public float CurrentChargeTime => m_currentChargeTime;
+
+    private void Start()
+    {
+        // D√©truire la balle apr√®s m_lifetime secondes
+        Destroy(gameObject, m_lifetime);
+    }
 
     public void SetCharge(float chargeTime)
     {
@@ -23,22 +33,22 @@ public class GunProjectile : MonoBehaviour
         float newSize = Mathf.Lerp(m_sizeMultiplier.x, m_sizeMultiplier.y, ratio);
         transform.localScale = Vector3.one * newSize;
 
-        Debug.Log($"Projectile chargÈ : Taille = {newSize}");
+        Debug.Log($"Projectile charg√© : Taille = {newSize}");
     }
 
     public void Shoot(Vector3 dir)
     {
         float ratio = m_currentChargeTime / m_chargeDuration;
 
-        // Calcule la vitesse finale
-        float finalSpeed = Mathf.Lerp(m_speedMultiplier.x, m_speedMultiplier.y, ratio);
-        Debug.Log($"Projectile tirÈ avec vitesse : {finalSpeed}");
+        // Calcule la vitesse finale en combinant la vitesse de base et le multiplicateur
+        float finalSpeed = m_baseSpeed + Mathf.Lerp(m_speedMultiplier.x, m_speedMultiplier.y, ratio);
+        Debug.Log($"Projectile tir√© avec vitesse : {finalSpeed}");
 
         // Applique la force
-        m_rb.velocity = Vector3.zero; // RÈinitialise la vitesse avant d'appliquer une force
+        m_rb.velocity = Vector3.zero; // R√©initialise la vitesse avant d'appliquer une force
         m_rb.AddForce(finalSpeed * dir, ForceMode.Impulse);
 
-        // RÈinitialise le temps de charge aprËs le tir
+        // R√©initialise le temps de charge apr√®s le tir
         m_currentChargeTime = 0.0f;
     }
 }

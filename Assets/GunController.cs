@@ -3,7 +3,7 @@ using UnityEngine;
 public class GunController : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private GunProjectile m_projectilePrefab;
+    [SerializeField] private GameObject m_projectilePrefab; // Prefab du projectile
     [SerializeField] private Transform m_shootingSpot;
     [SerializeField] private Camera m_mainCamera;
     [SerializeField] private Transform m_gunPivot; // Le point pivot pour orienter le canon
@@ -74,7 +74,8 @@ public class GunController : MonoBehaviour
     private void OnMouseButtonUp()
     {
         m_isCharging = false;
-        if (m_currentProjectile)
+
+        if (m_currentProjectile != null)
         {
             // Détacher le projectile avant le tir
             m_currentProjectile.transform.SetParent(null);
@@ -95,15 +96,33 @@ public class GunController : MonoBehaviour
         m_currentProjectile = InstantiateProjectile();
 
         // Attacher le projectile au shooting spot pour qu'il suive le canon
-        m_currentProjectile.transform.SetParent(m_shootingSpot);
-        m_currentProjectile.transform.localPosition = Vector3.zero;
-        m_currentProjectile.transform.localRotation = Quaternion.identity;
+        if (m_currentProjectile != null)
+        {
+            m_currentProjectile.transform.SetParent(m_shootingSpot);
+            m_currentProjectile.transform.localPosition = Vector3.zero;
+            m_currentProjectile.transform.localRotation = Quaternion.identity;
+        }
     }
 
     private GunProjectile InstantiateProjectile()
     {
-        GunProjectile projectile = Instantiate(m_projectilePrefab, m_shootingSpot.position, m_shootingSpot.rotation);
-        return projectile;
+        if (m_projectilePrefab == null)
+        {
+            Debug.LogError("Prefab de projectile non assigné !");
+            return null;
+        }
+
+        GameObject projectileInstance = Instantiate(m_projectilePrefab, m_shootingSpot.position, m_shootingSpot.rotation);
+        GunProjectile projectileComponent = projectileInstance.GetComponent<GunProjectile>();
+
+        if (projectileComponent == null)
+        {
+            Debug.LogError("Le prefab de projectile doit contenir un composant 'GunProjectile' !");
+            Destroy(projectileInstance);
+            return null;
+        }
+
+        return projectileComponent;
     }
 
     private void ShootProjectile(GunProjectile projectile, Vector3 dir)
@@ -120,6 +139,6 @@ public class GunController : MonoBehaviour
             return hit.point;
         }
 
-        return ray.GetPoint(100);
+        return ray.GetPoint(100); // Retourne un point éloigné si rien n'est touché
     }
 }
